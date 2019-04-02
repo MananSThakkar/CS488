@@ -1,0 +1,2 @@
+Client: connection built
+Sent = 52515 KB rate = 20 Mbps.
