@@ -53,8 +53,8 @@ public class Iperfer {
 			byte[] data = new byte[1000];
 			System.out.println("Server: connection built, Receiving data" );
 			startTime = System.currentTimeMillis();
-			while((dataSize = IS.read(data)) != -1) {
-				//IS.read(data);
+			while(dataSize != -1) {
+				dataSize = IS.read(data);
 				accumulatorBytes += dataSize;  //accumulate all the data
 		    	endTime = System.currentTimeMillis();
 			}
