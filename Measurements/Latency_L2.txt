@@ -1,0 +1,22 @@
+Received from /10.0.0.3: time: 107
+Received from /10.0.0.3: time: 107
+Received from /10.0.0.3: time: 103
+Received from /10.0.0.3: time: 101
+Received from /10.0.0.3: time: 103
+Received from /10.0.0.3: time: 103
+Received from /10.0.0.3: time: 103
+Received from /10.0.0.3: time: 103
+Received from /10.0.0.3: time: 103
+Received from /10.0.0.3: time: 103
+Received from /10.0.0.3: time: 105
+Received from /10.0.0.3: time: 103
+Received from /10.0.0.3: time: 101
+Received from /10.0.0.3: time: 104
+Received from /10.0.0.3: time: 104
+Received from /10.0.0.3: time: 103
+Received from /10.0.0.3: time: 105
+Received from /10.0.0.3: time: 103
+Received from /10.0.0.3: time: 102
+Received from /10.0.0.3: time: 102
+Average RTT: 103 Max RTT: 107 Min RTT: 101
+

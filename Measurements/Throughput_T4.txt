@@ -1,0 +1,5 @@
+Client: connection built, sending data:
+
+Sending Data completed.
+Sent = 61181 KB rate = 22 Mbps.
+
