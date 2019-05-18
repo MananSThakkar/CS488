@@ -37,11 +37,12 @@ public class Pinger {
 				
 				System.out.println("Received from " + client_hostname + ": " + new String(s));
 				
-			/*	int rand = r.nextInt(10) + 1;
+				//packet loss
+				int rand = r.nextInt(10) + 1;
 				if(rand <= 4) {
 					System.out.println("Not Sent!");
 					continue;
-				}  */
+				}
 					
 				byte[] dataSend = new byte[1024];
 				DatagramPacket datagramPacketSend = new DatagramPacket(dataSend, dataSend.length, client_hostname, server_port);
