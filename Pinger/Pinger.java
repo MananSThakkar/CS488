@@ -1,26 +1,106 @@
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
+import java.util.Random;
 
 public class Pinger {
 	
-	static InetAddress server_hostname;
+	static InetAddress server_hostname, client_hostname;
 	static int server_port;
 	static int packets;
 	
-	private static void PingerServer(int server_port) {
-		// TODO Auto-generated method stub
+	private static void PingerServer(int server_port) throws IOException {
+		long startTime = 0;
+	    long endTime = 0;
+	    byte[] dataReceived = new byte[1024];
+	    Random r = new Random();
+	    DatagramSocket datagramSocket = new DatagramSocket(server_port);
+	   
+	    
+	    while(true) {
+			try {
+				//datagramSocket.setSoTimeout(1000);
+				DatagramPacket datagramPacketReceive = new DatagramPacket(dataReceived, 1024);
+				datagramSocket.receive(datagramPacketReceive);
+				datagramPacketReceive.getData();
+				client_hostname = datagramPacketReceive.getAddress();
+				ByteArrayInputStream B = new ByteArrayInputStream(dataReceived);
+				InputStreamReader I = new InputStreamReader(B);
+				BufferedReader BR = new BufferedReader(I);
+				String s = BR.readLine();
+				
+				System.out.println("Received from " + client_hostname + ": " + new String(s));
+				
+			/*	int rand = r.nextInt(10) + 1;
+				if(rand <= 4) {
+					System.out.println("Not Sent!");
+					continue;
+				}  */
+					
+				byte[] dataSend = new byte[1024];
+				DatagramPacket datagramPacketSend = new DatagramPacket(dataSend, dataSend.length, client_hostname, server_port);
+				datagramSocket.send(datagramPacketSend);
+				
+			} 
+			catch (SocketException e) {
+				e.printStackTrace();
+			}
 		
+		}		
 	}
 
 
 
-	private static void PingerClient(InetAddress server_hostname, int server_port, int packets) {
-		// TODO Auto-generated method stub
+	private static void PingerClient(InetAddress server_hostname, int server_port, int packets) throws Exception {
+		DatagramSocket datagramSocket = new DatagramSocket(server_port);
+		int seq_num = 1;
+		long startTime = 0, endTime = 0, currentTime = 0, avgRTT = 0, max = 0, min = Integer.MAX_VALUE, totalTime = 0;
+		
+		while(seq_num <= packets) {
+			startTime = System.currentTimeMillis();
+			String send = "Ping " + seq_num + "\n";
+			byte[] dataSend = new byte[1024];
+			dataSend = send.getBytes();
+			DatagramPacket datagramPacketSend = new DatagramPacket(dataSend, dataSend.length, server_hostname, server_port );
+			datagramSocket.send(datagramPacketSend);
+			
+			try {
+				byte[] dataReceived = new byte[1024];
+				datagramSocket.setSoTimeout(1000);
+				DatagramPacket datagramPacketReceive = new DatagramPacket(dataReceived, 1024);
+				datagramSocket.receive(datagramPacketReceive);
+				endTime = System.currentTimeMillis();
+				currentTime = 1000*(endTime - startTime);
+				/* ByteArrayInputStream B = new ByteArrayInputStream(dataReceived);
+				InputStreamReader I = new InputStreamReader(B);
+				BufferedReader BR = new BufferedReader(I);
+				String receive = BR.readLine(); */
+				totalTime = totalTime + currentTime;
+				if(currentTime > max) {
+					max = currentTime;
+				}else if(currentTime < min) {
+					min = currentTime;
+				}
+				System.out.println("Received from " + server_hostname + ": " + "time: " + currentTime);
+				
+			}catch (SocketTimeoutException e) {
+				break;
+			}
+			seq_num++;
+		}
+		avgRTT = totalTime / packets;
+		System.out.println("Average RTT: " + avgRTT + " Max RTT: " + max + " Min RTT: " + min + "\n");
 		
 	}
 	
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws Exception {
 		if (args[0].equals("-c")) {
 			if(args.length != 7) {
 				System.out.println("Error: Missing or Additional arguments.");
